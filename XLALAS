@@ -29,6 +29,8 @@ end
 if not SBot5 then
 	SBot5 = "N/A"
 end
+FoF = 0
+getgenv().ARefresh = false
 local Library = {}
 local Objects = {}
 
@@ -651,7 +653,7 @@ function Library:CreateMain(Options)
 						if Options.default then 
 							State = true 
 							TS:Create(Interactables.ToggleShow, TweenInfo.new(0.1), {
-                                ImageColor3 = Color3.fromRGB(255, 84, 101),
+                                ImageColor3 = Color3.fromRGB(83, 255, 178),
 								Position = UDim2.new(0.53, 0, 0.115, 0)
 							}):Play()
 							if CallBack then 
@@ -995,8 +997,6 @@ function Library:CreateMain(Options)
 						if Options then
 							if Options.options and not Options.playerlist then
 								tablelist = Options.options
-                            elseif Options.refresh and not Options.playerlist then 
-                                tablelist = refreshV
 							elseif Options.options and Options.playerlist and not Options.refresh then
 								tablelist = {}
 								
@@ -1161,10 +1161,6 @@ function Library:CreateMain(Options)
 									v:Destroy()
 								end
 							end
-							print("Refreshed")
-                            if Options.refresh then 
-                                tablelist = refreshV
-                            end
 							for i, v in next, tablelist do
 								local button = Library:Create("ImageButton", {
 									Name = string.lower(v),
@@ -1255,8 +1251,6 @@ function Library:CreateMain(Options)
 							if Options then
 								if Options.options and not Options.playerlist then
 									tablelist = Options.options
-                                elseif Options.refresh and not Options.playerlist then 
-                                    tablelist = refreshV
 								elseif Options.options and Options.playerlist and not Options.refresh then
 									tablelist = {}
 									
@@ -1362,8 +1356,6 @@ function Library:CreateMain(Options)
 						if Options then
 							if Options.options and not Options.playerlist then
 								tablelist = Options.options
-                            elseif Options.refresh and not Options.playerlist then 
-                                tablelist = refreshV
 							elseif Options.options and Options.playerlist and not Options.refresh then
 								tablelist = {}
 								
@@ -1529,35 +1521,23 @@ function Library:CreateMain(Options)
 									v:Destroy()
 								end
 							end
-							print("Refreshed")
                             if Options.refresh then
-								if game:GetService("Players").LocalPlayer.PlayerGui.DialogInventory then
-									if game:GetService("Players").LocalPlayer.PlayerGui.DialogInventory.Enabled == false then
-										game:GetService("Players").LocalPlayer.PlayerGui.DialogInventory.Enabled = true
-										game:GetService("Players").LocalPlayer.PlayerGui.DialogInventory.Enabled = false
-									end
-								end
-								ABL = 0
-								ABots = {}
-								if SBot1 and SBot2 and SBot3 and SBot4 and SBot5 then 
-									SBots = {SBot1,SBot2,SBot3,SBot4,SBot5}
-									if game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("DialogInventory") ~= nil then
-										for i,v in pairs (game:GetService("Players").LocalPlayer.PlayerGui.DialogInventory.Frame.ItemsFrameRobo.ItemsFrame.ScrollingFrame:GetDescendants()) do
-											if v.Name == "Button" and v.Lock.Visible == true and v.Parent.Name ~= "ItemButton" then
-												table.insert(ABots,v.Parent.Name)
-												ABL = ABL + 1
-											end
-										end
-										for i,v in next,SBots do
-											RV = tostring(v)
-											RB = table.find(ABots, RV)
-											if RB ~= nil then
-												table.remove(ABots, RB)
-											end
-										end
-										tablelist = ABots
-									end
-								end
+                                ABL = 0
+                                ABots = {}
+                                SBots = {SBot1,SBot2,SBot3,SBot4,SBot5}
+                                for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Data.Robo.Inst:GetChildren()) do
+                                    if v:GetAttribute("Locked") == true then
+                                        table.insert(ABots,v.Name)
+                                    end
+                                end
+                                for i,v in next,SBots do
+                                    RV = tostring(v)
+                                    RB = table.find(ABots, RV)
+                                    if RB ~= nil then
+                                        table.remove(ABots, RB)
+                                    end
+                                end
+                                tablelist = ABots
                             end
 							for i, v in next, tablelist do
 								local button = Library:Create("ImageButton", {
@@ -1592,6 +1572,35 @@ function Library:CreateMain(Options)
 								
 								button.Parent = Interactables.list
 								buttontext.Parent = button
+
+                                Interactables.selected.Focused:Connect(function()
+                                    if FoF < 1 then
+                                        FoF = 1
+                                        if not dropdownopen then
+                                            dropdownopen = not dropdownopen
+                                            if dropdownopen then
+                                                refreshlist()
+                                                TS:Create(Section.Container, TweenInfo.new(0.1), {
+                                                    Size = Section.Container.Size + UDim2.new(0, 0, 0, 125)
+                                                }):Play()
+                                                TS:Create(Interactables.dropdownb, TweenInfo.new(0.1), {
+                                                    Size = UDim2.new(0.982, 0, 0, 154)
+                                                }):Play()
+                                                TS:Create(Category.Container, TweenInfo.new(0.1), {
+                                                    CanvasSize = Category.Container.CanvasSize + UDim2.new(0, 0, 0, 125)
+                                                }):Play()
+                                                TS:Create(Interactables.list, TweenInfo.new(0.1), {
+                                                    CanvasSize = UDim2.new(0, 0, 0, Interactables.list["UIListLayout"].AbsoluteContentSize.Y) + UDim2.new(0, 0, 0, 26)
+                                                }):Play()
+                                                TS:Create(Interactables.arrow, TweenInfo.new(0.1), {
+                                                    Rotation = 0
+                                                }):Play()
+                                            end
+                                        end
+                                        wait(.1)
+                                        FoF = 0 
+                                    end
+								end)
 								
 								button.MouseButton1Click:Connect(function()
 									if dropdownopen then
@@ -1653,8 +1662,6 @@ function Library:CreateMain(Options)
 							if Options then
 								if Options.options and not Options.playerlist then
 									tablelist = Options.options
-                                elseif Options.refresh and not Options.playerlist then 
-                                    tablelist = refreshV
 								elseif Options.options and Options.playerlist and not Options.refresh then
 									tablelist = {}
 									
@@ -1819,7 +1826,7 @@ function Library:CreateMain(Options)
 								}):Play()
 								SearchLock = true
 								Nil()
-								Interactables.selected.Text = tostring(Options.default) or tostring(selectedvalue)
+								Interactables.selected.Text = tostring(selectedvalue) or tostring(Options.default)
 							end
 						end)
 						
