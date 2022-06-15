@@ -14,23 +14,7 @@ function RandomCharacters(length)
 end
 maintitle1 = RandomCharacters(math.random(5, 20))
 change = 0
-if not SBot1 then
-	SBot1 = "N/A"
-end
-if not SBot2 then
-	SBot2 = "N/A"
-end
-if not SBot3 then
-	SBot3 = "N/A"
-end
-if not SBot4 then
-	SBot4 = "N/A"
-end
-if not SBot5 then
-	SBot5 = "N/A"
-end
 FoF = 0
-getgenv().ARefresh = false
 local Library = {}
 local Objects = {}
 
