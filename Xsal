@@ -15,6 +15,7 @@ end
 maintitle1 = RandomCharacters(math.random(5, 20))
 change = 0
 FoF = 0
+getgenv().ARefresh = false
 local Library = {}
 local Objects = {}
 
@@ -1183,8 +1184,13 @@ function Library:CreateMain(Options)
 									if dropdownopen then
 										
 										dropdownopen = not dropdownopen
-										Interactables.selected.Text = v
-										selectedvalue = v
+										if Options.UpdValue then
+											Interactables.selected.Text = Options.UpdValue
+											selectedvalue = Options.UpdValue
+										else
+											Interactables.selected.Text = v
+											selectedvalue = v
+										end
 										
 										if dropdownopen then
 											refreshlist()
@@ -1317,7 +1323,7 @@ function Library:CreateMain(Options)
                         local searchtable = {}
 						local selectedvalue
 						
-						if Options then
+						if Options and not Options.UpdValue then
 							if Options.default and Options.options and not Options.playerlist then
 								selectedvalue = Options.default
 							elseif Options.default and Options.options and Options.playerlist then
@@ -1333,6 +1339,8 @@ function Library:CreateMain(Options)
 							elseif Options.default and not Options.options and Options.playerlist then
 								selectedvalue = Options.default               
 							end
+						elseif Options and Options.UpdValue then
+							selectedvalue = Options.UpdValue
 						end
 						
 						local tablelist
@@ -1499,7 +1507,10 @@ function Library:CreateMain(Options)
 						Interactables.list.Parent = Interactables.listb
 						
 						local function refreshlist()
-							
+							if Options.UpdValue then
+								Interactables.selected.Text = Options.UpdValue
+								selectedvalue = Options.UpdValue
+							end
 							for i, v in next, Interactables.list:GetChildren() do
 								if v:IsA("ImageButton") then
 									v:Destroy()
@@ -1599,8 +1610,13 @@ function Library:CreateMain(Options)
                                     ShowChange()
 									if dropdownopen then
 										dropdownopen = not dropdownopen
-										Interactables.selected.Text = v
-										selectedvalue = v
+										if Options.UpdValue then
+											Interactables.selected.Text = Options.UpdValue
+											selectedvalue = Options.UpdValue
+										else
+											Interactables.selected.Text = v
+											selectedvalue = v
+										end
 										if dropdownopen then
 											refreshlist()
 											TS:Create(Section.Container, TweenInfo.new(0.1), {
@@ -2399,4 +2415,5 @@ function Library:CreateMain(Options)
 	Main.Categoriesselector.Parent = Main.Sidebar
 	return Main
 end
+
 return Library
