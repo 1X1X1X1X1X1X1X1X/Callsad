@@ -1,6 +1,7 @@
 if getgenv().ZypherUI then
     getgenv().ZypherUI:Destroy()
 end
+print("UpdateReflected")
 local charset = {}
 for i = 48,  57 do table.insert(charset, string.char(i)) end
 for i = 65,  90 do table.insert(charset, string.char(i)) end
@@ -15,7 +16,6 @@ end
 maintitle1 = RandomCharacters(math.random(5, 20))
 change = 0
 FoF = 0
-getgenv().ARefresh = false
 local Library = {}
 local Objects = {}
 
@@ -1517,7 +1517,7 @@ function Library:CreateMain(Options)
 								end
 							end
                             if Options.refresh and Options.RefreshTab then
-                                tablelist = Options.RefreshTab
+                                tablelist = Options.RefreshTab()
                             end
 							for i, v in next, tablelist do
                                 table.insert(searchtable, string.lower(v))
